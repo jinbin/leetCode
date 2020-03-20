@@ -1,8 +1,7 @@
 package com.jinbin;
 
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Main {
@@ -57,22 +56,52 @@ public class Main {
         int[] nums11 = {-2,1,-3,4,-1,2,1,-5,4};
         System.out.println(s.maxSubArray(nums11));
 
-        System.out.println(s.lengthOfLongestSubstring("abcdabcdeeeeeee"));
 
-        int[][] grid = {{0,0,1,0,0,0,0,1,0,0,0,0,0},
-                {0,0,0,0,0,0,0,1,1,1,0,0,0},
-                {0,1,1,0,1,0,0,0,0,0,0,0,0},
-                {0,1,0,0,1,1,0,0,1,0,1,0,0},
-                {0,1,0,0,1,1,0,0,1,1,1,0,0},
-                {0,0,0,0,0,0,0,0,0,0,1,0,0},
-                {0,0,0,0,0,0,0,1,1,1,0,0,0},
-                {0,0,0,0,0,0,0,1,1,0,0,0,0}};
-
-        System.out.println("max_area: " + s.maxAreaOfIsland(grid));
     }
 }
 
 class Solution {
+    // https://leetcode-cn.com/problems/zui-xiao-de-kge-shu-lcof/
+    public int[] getLeastNumbers(int[] arr, int k) {
+        for(int i = 0; i < k; i++){
+            int curr = arr[i];
+            for(int j = i - 1; j >= 0; j--){
+                //Ni 与 Nj 依次进行比较
+                if(curr >= arr[j]){
+                    // Ni 插入此时位置，其他数字后移
+                }else{
+                    swap(arr, j, j + 1);
+                }
+            }
+        }
+
+        //前k个已经排好序了，后面开始依次比较
+        for(int i = k; i < arr.length; i++){
+            int curr = arr[i];
+            // System.out.println("curr: " + curr);
+            for(int j = k - 1; j >= 0; j--){
+                if(curr < arr[j]){
+                    if(j == k - 1){
+                        swap(arr, j, i);
+                    }else{
+                        swap(arr, j, j + 1);
+                        // System.out.println("swap: " + Arrays.toString(arr));
+                    }
+                }else{
+                    break;
+                }
+            }
+        }
+
+        return Arrays.copyOfRange(arr, 0, 4);
+    }
+
+    public void swap(int[] arr, int i, int j){
+        int tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+    }
+
     public ListNode makeNodes(int[] nums){
         ListNode head = null;
         ListNode end = null;
@@ -704,6 +733,78 @@ class Solution {
             }
         }
         return max;
+    }
+
+    public int find_matrix_num(int[][] matrix){
+        int total_num = 0;
+        for(int i = 0; i < matrix[0].length; i++){
+            for(int j = 0; j < matrix.length; j++){
+                if(matrix[i][j] == 1){
+                    total_num = total_num + 1;
+//                    System.out.println("total_num: " + total_num);
+//                    System.out.println("z: " + String.valueOf(matrix.length - 1 - i));
+                    for(int z = 1; z <= matrix.length - 1 - i; z++){
+//                        System.out.println("z: " + z);
+                        if(is_matrix(matrix, i, j, z)){
+                            total_num = total_num + 1;
+                        }else{
+                            break;
+                        }
+                    }
+                }else{
+                    continue;
+                }
+            }
+        }
+        return total_num;
+    }
+
+    // 判断是否存在matrix
+    public boolean is_matrix(int[][] matrix, int i, int j, int len){
+//        System.out.println("len: " + len);
+        if(i + len > matrix[0].length - 1){
+            return false;
+        }
+
+        if(j + len > matrix.length - 1){
+            return false;
+        }
+
+        for(int x = i; x < i+len+1; x++){
+            // 写错成 j < y + len + 1;
+            for(int y = j; y < j + len + 1; y++){
+//                System.out.println("x, y" + x + " " + y );
+                if(matrix[x][y]!=1){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public int minDistance(String s1, int len1, String s2, int len2){
+
+        if(len1 == 0){
+            return len2;
+        }
+
+        if(len2 == 0){
+            return len1;
+        }
+
+        char c1 = s1.charAt(len1 - 1);
+        char c2 = s2.charAt(len2 - 1);
+
+        if(c1 == c2){
+            return minDistance(s1, len1 -1, s2, len2 - 1);
+        }
+
+        int temp_len1 = minDistance(s1, len1 - 1, s2, len2);
+        int temp_len2 = minDistance(s1, len1, s2, len2 - 1);
+        int temp_len3 = minDistance(s1, len1 - 1, s2, len2 - 1);
+
+        return Math.min(temp_len3, Math.min(temp_len1, temp_len2)) + 1;
     }
 }
 
