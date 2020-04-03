@@ -783,7 +783,7 @@ class Solution {
         return true;
     }
 
-    public int minDistance(String s1, int len1, String s2, int len2){
+    public int minDistance_recursive(String s1, int len1, String s2, int len2){
 
         if(len1 == 0){
             return len2;
@@ -797,14 +797,69 @@ class Solution {
         char c2 = s2.charAt(len2 - 1);
 
         if(c1 == c2){
-            return minDistance(s1, len1 -1, s2, len2 - 1);
+            return minDistance_recursive(s1, len1 -1, s2, len2 - 1);
         }
 
-        int temp_len1 = minDistance(s1, len1 - 1, s2, len2);
-        int temp_len2 = minDistance(s1, len1, s2, len2 - 1);
-        int temp_len3 = minDistance(s1, len1 - 1, s2, len2 - 1);
+        int temp_len1 = minDistance_recursive(s1, len1 - 1, s2, len2);
+        int temp_len2 = minDistance_recursive(s1, len1, s2, len2 - 1);
+        int temp_len3 = minDistance_recursive(s1, len1 - 1, s2, len2 - 1);
 
         return Math.min(temp_len3, Math.min(temp_len1, temp_len2)) + 1;
+    }
+
+    public int minDistance(String s1, String s2){
+        if(s1.length() == 0){
+            return s2.length();
+        }
+
+        if(s2.length() == 0){
+            return s1.length();
+        }
+
+        int[][] matrix = new int[s1.length() + 1][s2.length() + 1];
+
+        for(int i = 0; i < s1.length() + 1; i++){
+            for(int j = 0;j < s2.length() + 1; j++){
+                matrix[i][j] = -1;
+            }
+        }
+
+        //matrix[0][0] = 0;
+
+        // forget to add 1
+        for(int j = 0; j < s2.length() + 1; j++){
+            matrix[0][j] = j;
+        }
+
+        for(int i = 0; i < s1.length() + 1; i++){
+            matrix[i][0] = i;
+        }
+
+        for(int i = 0; i < s1.length() + 1; i++){
+            for(int j = 0; j < s2.length() + 1; j++){
+                // 若未计算，则计算
+                if(matrix[i][j] < 0){
+                    matrix[i][j] = Math.min(Math.min(matrix[i-1][j], matrix[i][j-1]), matrix[i-1][j-1]);
+                    if(s1.charAt(i-1) != s2.charAt(j-1)){
+                        matrix[i][j] = matrix[i][j] + 1;
+                    }
+                }
+            }
+        }
+
+//        for(int j = 0; j < s2.length(); j++){
+//            System.out.print(" " + s2.charAt(j));
+//        }
+//
+//        for(int i = 0; i < s1.length(); i++){
+//            System.out.println("");
+//            System.out.print(s1.charAt(i) + " ");
+//            for(int j = 0; j < s2.length(); j++){
+//                System.out.print(matrix[i][j] + " ");
+//            }
+//        }
+
+        return matrix[s1.length()][s2.length()];
     }
 
     public int unfinished_distance(String s1, String s2){

@@ -2,31 +2,49 @@ package com.jinbin.leetcode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.sun.org.apache.xpath.internal.Arg;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 public class SolutionJUnitJupiterTests {
     Solution s = new Solution();
 
-    @Test
-    void test_字符串距离_相等字符串比较(){
-        String s1 = "abc";
-        String s2 = "abc";
-
-        int len1 = s1.length();
-        int len2 = s2.length();
-
-        assertEquals(0, s.minDistance(s1, len1, s2, len2));
+    @ParameterizedTest
+    @MethodSource("stringCompare")
+    void test_字符串距离_复杂字符串比较(String s1, String s2, int expected){
+        long startTime = System.currentTimeMillis();
+        assertEquals(expected, s.minDistance_recursive(s1, s1.length(), s2, s2.length()));
+        long endTime   = System.currentTimeMillis();
+        long TotalTime = endTime - startTime;
+        System.out.println("耗时: " + TotalTime + "毫秒");
     }
 
-    @Test
-    void test_字符串距离_空字符串比较(){
-        String s1 = "";
-        String s2 = "";
+    @ParameterizedTest
+    @MethodSource("stringCompare")
+    void test_字符串距离1_相等字符串比较(String s1, String s2, int expected){
+        long startTime = System.currentTimeMillis();
+        assertEquals(expected, s.minDistance(s1, s2));
+        long endTime   = System.currentTimeMillis();
+        long TotalTime = endTime - startTime;
+        System.out.println("耗时: " + TotalTime + "毫秒");
+    }
 
-        int len1 = s1.length();
-        int len2 = s2.length();
+    // It must be static
+    // Arguments is a simple interface wrapping an array of objects
+    private static Stream<Arguments> stringCompare(){
 
-        assertEquals(0, s.minDistance(s1, len1, s2, len2));
+        return Stream.of(
+                Arguments.of("array1", "expect_array1", 7),
+                Arguments.of("Cyoungslime C漾史莱姆", "c.漾cyoungslime", 10),
+                Arguments.of("array1", "array1_expect", 7),
+                Arguments.of("", "abcd", 4),
+                Arguments.of("", "", 0),
+                Arguments.of("abcd", "abcd", 0)
+        );
     }
 
     @Test
