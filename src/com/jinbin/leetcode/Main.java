@@ -7,6 +7,42 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
+
+//            for(int i = 0; i < input.length; i++){
+//                if(input[buy] < input[i]){
+//                    int profit = input[i] - input[buy];
+//                    if(profit > max_profit){
+//                        max_profit = profit;
+//                        sell = i;
+//                    }
+//                }else{
+//                    buy = i;
+//                }
+//            }
+        int[] input = {9,2,5,4,4,3,5,7,1,1};
+        int buy = 0;
+        int sell = 0;
+        int start = 0;
+        int max_profit = 0;
+
+        for(int i = 0; i < input.length; i++){
+            if(input[i] > input[start]){
+                int profit = input[i] - input[start];
+                if(profit > max_profit){
+                    max_profit = profit;
+                    buy = start;
+                    sell = i;
+                }
+            }else{
+                start = i;
+            }
+        }
+            System.out.println(buy);
+            System.out.println(sell);
+            System.out.println(max_profit);
+
+        System.exit(0);
+
         Solution s = new Solution();
 
         //char matrix[][] = {{'0','1','1','0','0','1','0','1','0','1'},{'0','0','1','0','1','0','1','0','1','0'},{'1','0','0','0','0','1','0','1','1','0'},{'0','1','1','1','1','1','1','0','1','0'},{'0','0','1','1','1','1','1','1','1','0'},{'1','1','0','1','0','1','1','1','1','0'},{'0','0','0','1','1','0','0','0','1','0'},{'1','1','0','1','1','0','0','1','1','1'},{'0','1','0','1','1','0','1','0','1','1'}};
@@ -15,6 +51,7 @@ public class Main {
         //System.out.println(s.maximalSquare(matrix));
 
         int[] nums = {1,2,3};
+
         ListNode head = s.makeNodes(nums);
 
         int[] nums1 = {1,4,5};
@@ -61,6 +98,16 @@ public class Main {
 }
 
 class Solution {
+    public void maxProfix(int[] input){
+        int start = 0;
+        int end = 1;
+        for(int i = 1; i < input.length; i++){
+            if(input[i] >= input[start]){
+                end = i;
+            }
+        }
+    }
+
     // https://leetcode-cn.com/problems/zui-xiao-de-kge-shu-lcof/
     public int[] getLeastNumbers(int[] arr, int k) {
         for(int i = 0; i < k; i++){
@@ -100,6 +147,28 @@ class Solution {
         int tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
+    }
+
+    public int searchInsert(int[] nums, int target) {
+        int left = 0;
+        int right = nums.length - 1;
+//        int ans = nums.length;
+        int ans = -1;
+
+        while(right >= left){
+            int middle = (right + left) / 2;
+            if(nums[middle] == target){
+                return middle;
+            }else if(nums[middle] > target){
+                ans = middle;
+                right = middle - 1;
+            }else if(nums[middle] < target){
+                ans = middle + 1;
+                left = middle + 1;
+            }
+        }
+
+        return ans;
     }
 
     public ListNode makeNodes(int[] nums){
@@ -158,15 +227,42 @@ class Solution {
         }
     }
 
+    public int lengthOfLongestSubstring2(String s){
+        int max_length = 0;
+        int start = 0;
+        for(int i = 0; i < s.length(); i++){
+            for(int j = start; j < i; j++){
+                if(s.charAt(j) == s.charAt(i)){
+                    // int length = j - start;
+                    int length = i - start;
+                    if(length > max_length){
+                        max_length = length;
+                    }
+                    //start = j;
+                    start = j + 1;
+                    break;
+                }
+            }
+        }
+        int length = s.length() - start;
+        if(length > max_length){
+            max_length = length;
+        }
+        return max_length;
+    }
+
     public int maxAreaOfIsland(int[][] grid) {
-        int max_area = 1;
+        int max_area = 0;
         for(int i = 0; i < grid.length; i++){
             for(int j = 0; j < grid[0].length; j++){
                 // 从当前点出发的面试 = 四周为1的点的面积总和
                 // 当前点 grid[i][j]
                 // grid[i-1][j], grid[i+1][j], grid[i][j-1], grid[i][j+1] 可能不存在
                 // area(i,j) = 1 + area(i-1, j) + area(i+1, j) + area(i, j-1), area(i, j+1)
+                System.out.println("i is " + i);
+                System.out.println("j is " + j);
                 int area = AreaOfIsland(grid, i, j, grid.length, grid[0].length);
+                System.out.println(area);
                 if(area > max_area){
                     max_area = area;
                 }
@@ -191,6 +287,39 @@ class Solution {
         grid[i][j] = 0;
 
         return 1 + AreaOfIsland(grid, i-1, j, max_i, max_j) + AreaOfIsland(grid, i+1, j, max_i, max_j) + AreaOfIsland(grid, i, j-1, max_i, max_j) + AreaOfIsland(grid, i, j+1, max_i, max_j);
+    }
+
+    public int maxAreaOfIsland2(int[][] grid) {
+        int max_area = 0;
+        for(int i = 0; i < grid.length; i++){
+            for(int j = 0; j < grid[0].length; j++){
+                int area = AreaOfIsland2(grid, i, j, grid.length, grid[0].length);
+                System.out.println(area);
+                if(area > max_area){
+                    max_area = area;
+                }
+            }
+        }
+        return max_area;
+    }
+
+    public int AreaOfIsland2(int[][] grid, int i, int j, int max_i, int max_j){
+        if(i >= max_i || j >= max_j || i < 0 || j < 0){
+            return 0;
+        }
+
+        if(grid[i][j] == 0){
+            return 0;
+        }
+
+        grid[i][j] = 0;
+
+        // 矩阵斜对角不算连接
+        return 1 + AreaOfIsland2(grid,i-1, j, max_i, max_j) + AreaOfIsland2(grid,i+1, j, max_i, max_j)
+                + AreaOfIsland2(grid,i, j-1, max_i, max_j) + AreaOfIsland2(grid,i, j+1, max_i, max_j);
+
+//        return 1 + AreaOfIsland2(grid,i-1, j, max_i, max_j) + AreaOfIsland2(grid,i+1, j, max_i, max_j) + AreaOfIsland2(grid,i, j-1, max_i, max_j) + AreaOfIsland2(grid,i, j+1, max_i, max_j)
+//                + AreaOfIsland2(grid,i+1, j+1, max_i, max_j) + AreaOfIsland2(grid,i-1, j-1, max_i, max_j) + AreaOfIsland2(grid,i-1, j+1, max_i, max_j) + AreaOfIsland2(grid,i+1, j-1, max_i, max_j);
     }
 
     // https://leetcode-cn.com/explore/featured/card/bytedance/246/dynamic-programming-or-greedy/1042/
@@ -839,25 +968,14 @@ class Solution {
             for(int j = 0; j < s2.length() + 1; j++){
                 // 若未计算，则计算
                 if(matrix[i][j] < 0){
-                    matrix[i][j] = Math.min(Math.min(matrix[i-1][j], matrix[i][j-1]), matrix[i-1][j-1]);
+                    int tmp1 = matrix[i-1][j-1];
                     if(s1.charAt(i-1) != s2.charAt(j-1)){
-                        matrix[i][j] = matrix[i][j] + 1;
+                        tmp1 = tmp1 + 1;
                     }
+                    matrix[i][j] = Math.min(Math.min(matrix[i-1][j] + 1, matrix[i][j-1] + 1), tmp1);
                 }
             }
         }
-
-//        for(int j = 0; j < s2.length(); j++){
-//            System.out.print(" " + s2.charAt(j));
-//        }
-//
-//        for(int i = 0; i < s1.length(); i++){
-//            System.out.println("");
-//            System.out.print(s1.charAt(i) + " ");
-//            for(int j = 0; j < s2.length(); j++){
-//                System.out.print(matrix[i][j] + " ");
-//            }
-//        }
 
         return matrix[s1.length()][s2.length()];
     }
@@ -942,5 +1060,11 @@ class MinStack {
             }
         }
         return min;
+    }
+}
+
+class Heap {
+    public void heapSort(int[] nums){
+
     }
 }
