@@ -131,20 +131,27 @@ public class Solution {
     }
 
     public static void main(String[] args){
-//        Solution s = new Solution();
-//        System.out.println(s.lengthOfLastWord("Hello World11111"));
-//
-//        ArrayList<Integer> list = new ArrayList<>();
-//        System.out.println(true & false);
-//        System.out.println(true && false);
+        String num = "58";
+        Integer.parseInt(num); //58
 
-//        int[] arr = {3,4,5,1};
-//        Solution s = new Solution();
-//        int peak = s.peakIndexInMountainArray(arr);
-//        System.out.println(peak);
 
-        Solution s = new Solution();
-//        s.trailingZeroes(10);
-        s.xx();
+        String num1 = "101";
+        Integer.parseInt(num1, 2); //5
+        System.out.println(Integer.parseInt(num1, 2));
+
+        int num2 = 58;
+        Integer.toString(num2); //"58"
+        System.out.println(Integer.toString(num2)); //"58"
+
+        int num3 = 5;
+        Integer.toBinaryString(num3); //"101"
+        System.out.println(Integer.toBinaryString(num3)); //"101"
+
+        char[] arr = {'c', 'b', 'a'};
+        String s = new String(arr);
+        System.out.println(s);
+
+        String cba = "cba";
+        cba.toCharArray(); //['c', 'b', 'a']​
     }
 }

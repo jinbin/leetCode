@@ -33,5 +33,8 @@ public class lengthOfLIS {
 
         int[] nums1 = {1};
         System.out.println(len.lengthOfLIS(nums1));
+
+        String astr = "aaaaa";
+        int move = (int)(astr.charAt(1)) - (int)'a';
     }
 }
